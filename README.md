@@ -136,5 +136,17 @@ Vi benytter en docker-compose for at sætte op vores cluster. Replicas kan dog i
     
 
 ##Harmonic Centrality algorithm eksempel
+    CREATE (a:Node{id:"A"}),
+       (b:Node{id:"B"}),
+       (c:Node{id:"C"}),
+       (d:Node{id:"D"}),
+       (e:Node{id:"E"}),
+       (a)-[:LINK]->(b),
+       (b)-[:LINK]->(c),
+       (d)-[:LINK]->(e)
 
-
+      CALL gds.alpha.closeness.harmonic.write({
+      nodeProjection: 'Node',
+      relationshipProjection: 'LINK',
+      writeProperty: 'centrality'
+    }) YIELD nodes, writeProperty
