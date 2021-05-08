@@ -20,7 +20,6 @@ Vi benytter en docker-compose for at sætte op vores cluster. Replicas kan dog i
        (d)-[:ROAD {cost: 80}]->(f),
        (e)-[:ROAD {cost: 40}]->(f);
 
-##
     CALL gds.graph.create(
         'myGraph',
         'Location',
@@ -30,7 +29,6 @@ Vi benytter en docker-compose for at sætte op vores cluster. Replicas kan dog i
         }
     )
 
-##
     MATCH (source:Location {name: 'A'}), (target:Location {name: 'F'})
     CALL gds.beta.shortestPath.dijkstra.write.estimate('myGraph', {
         sourceNode: id(source),
@@ -42,7 +40,7 @@ Vi benytter en docker-compose for at sætte op vores cluster. Replicas kan dog i
     RETURN nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
 
 
-##overlap similarity algorith eksempel
+## overlap similarity algorith eksempel
     CREATE
     (fahrenheit451:Book {title:'Fahrenheit 451'}),
     (dune:Book {title:'Dune'}),
@@ -90,22 +88,21 @@ Vi benytter en docker-compose for at sætte op vores cluster. Replicas kan dog i
 ## collapse path algorithm eksempel
 
     CREATE
-  (Dan:Person),
-  (Annie:Person),
-  (Matt:Person),
-  (Jeff:Person),
+      (Dan:Person),
+      (Annie:Person),
+      (Matt:Person),
+      (Jeff:Person),
 
-  (Guitar:Instrument),
-  (Flute:Instrument),
+      (Guitar:Instrument),
+      (Flute:Instrument),
 
-  (Dan)-[:PLAYS]->(Guitar),
-  (Annie)-[:PLAYS]->(Guitar),
+      (Dan)-[:PLAYS]->(Guitar),
+      (Annie)-[:PLAYS]->(Guitar),
 
-  (Matt)-[:PLAYS]->(Flute),
-  (Jeff)-[:PLAYS]->(Flute)
+      (Matt)-[:PLAYS]->(Flute),
+      (Jeff)-[:PLAYS]->(Flute)
 
 
-    (p1:Person)-[:PLAYS]->(:Instrument)-[:PLAYED_BY]->(p2:Person)
 
 
 
@@ -135,7 +132,7 @@ Vi benytter en docker-compose for at sætte op vores cluster. Replicas kan dog i
 
     
 
-##Harmonic Centrality algorithm eksempel
+## Harmonic Centrality algorithm eksempel
     CREATE (a:Node{id:"A"}),
        (b:Node{id:"B"}),
        (c:Node{id:"C"}),
