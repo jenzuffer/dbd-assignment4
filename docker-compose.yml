@@ -1,0 +1,130 @@
+version: '3.8'
+
+x-shared:
+  &common
+  NEO4J_AUTH: neo4j/foobar
+  #NEO4J_AUTH: none
+  NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+  NEO4J_causal__clustering_initial__discovery__members: core1:5000,core2:5000,core3:5000
+  NEO4J_dbms_default__listen__address: 0.0.0.0
+  NEO4J_dbms_memory_pagecache_size: 1G
+  NEO4J_dbms.memory.heap.initial_size: 2G
+  NEO4J_dbms_memory_heap_max__size: 4G
+  NEO4J_causal__clustering_minimum__core__cluster__size__at__runtime: 3
+
+x-shared-core:
+  &common-core
+  <<: *common
+  NEO4J_dbms_mode: CORE
+  NEO4J_causal__clustering_minimum__core__cluster__size__at__formation: 3
+
+networks:
+  lan:
+
+services:
+  core1:
+    hostname: core1
+    image: neo4j:enterprise
+    networks:
+      - lan
+    ports:
+      - 7474:7474
+      - 6477:6477
+      - 7687:7687
+    container_name: core1
+    environment:
+      <<: *common-core
+      NEO4J_causal__clustering_discovery__advertised__address: core1:5000
+      NEO4J_causal__clustering_transaction__advertised__address: core1:6000
+      NEO4J_causal__clustering_raft__advertised__address: core1:7000
+      NEO4J_causal__clustering_initial__discovery__members: core1:5000,core2:5000,core3:5000
+      NEO4JLABS_PLUGINS: '["graph-data-science"]'
+      NEO4J_dbms_security_procedures_unrestricted: gds.*
+      NEO4J_dbms_security_procedures_allowlist: gds.*
+
+  core2:
+    hostname: core2
+    image: neo4j:enterprise
+    networks:
+      - lan
+    ports:
+      - 7475:7475
+      - 6478:6478
+      - 7688:7688
+    container_name: core2
+    environment:
+      <<: *common-core
+      NEO4J_causal__clustering_discovery__advertised__address: core2:5000
+      NEO4J_causal__clustering_transaction__advertised__address: core2:6000
+      NEO4J_causal__clustering_raft__advertised__address: core2:7000
+      NEO4J_dbms_connector_http_listen__address: :7475
+      NEO4J_dbms_connector_https_listen__address: :6478
+      NEO4J_dbms_connector_bolt_listen__address: :7688
+      NEO4JLABS_PLUGINS: '["graph-data-science"]'
+      NEO4J_dbms_security_procedures_unrestricted: gds.*
+      NEO4J_dbms_security_procedures_allowlist: gds.*
+
+  core3:
+    hostname: core3
+    image: neo4j:enterprise
+    networks:
+      - lan
+    ports:
+      - 7476:7476
+      - 6479:6479
+      - 7689:7689
+    container_name: core3
+    environment:
+      <<: *common-core
+      NEO4J_causal__clustering_discovery__advertised__address: core3:5000
+      NEO4J_causal__clustering_transaction__advertised__address: core3:6000
+      NEO4J_causal__clustering_raft__advertised__address: core3:7000
+      NEO4J_dbms_connector_http_listen__address: :7476
+      NEO4J_dbms_connector_https_listen__address: :6479
+      NEO4J_dbms_connector_bolt_listen__address: :7689
+      NEO4JLABS_PLUGINS: '["graph-data-science"]'
+      NEO4J_dbms_security_procedures_unrestricted: gds.*
+      NEO4J_dbms_security_procedures_allowlist: gds.*
+
+
+  readreplica1:
+    image: neo4j:enterprise
+    networks:
+      - lan
+    ports:
+      - 7477:7477
+      - 6480:6480
+      - 7690:7690
+    environment:
+      <<:  *common
+      NEO4J_dbms_mode: READ_REPLICA
+      NEO4J_causal__clustering_discovery__advertised__address: readreplica1:5000
+      NEO4J_causal__clustering_transaction__advertised__address: readreplica1:6000
+      NEO4J_causal__clustering_raft__advertised__address: readreplica1:7000
+      NEO4J_dbms_connector_http_listen__address: :7477
+      NEO4J_dbms_connector_https_listen__address: :6480
+      NEO4J_dbms_connector_bolt_listen__address: :7690
+      NEO4JLABS_PLUGINS: '["graph-data-science"]'
+      NEO4J_dbms_security_procedures_unrestricted: gds.*
+      NEO4J_dbms_security_procedures_allowlist: gds.*
+
+  readreplica2:
+    image: neo4j:enterprise
+    networks:
+      - lan
+    ports:
+      - 7478:7478
+      - 6481:6481
+      - 7691:7691
+    environment:
+      <<: *common
+      NEO4J_dbms_mode: READ_REPLICA
+      NEO4J_causal__clustering_discovery__advertised__address: readreplica2:5000
+      NEO4J_causal__clustering_transaction__advertised__address: readreplica2:6000
+      NEO4J_causal__clustering_raft__advertised__address: readreplica2:7000
+      NEO4J_dbms_connector_http_listen__address: :7478
+      NEO4J_dbms_connector_https_listen__address: :6481
+      NEO4J_dbms_connector_bolt_listen__address: :7691
+      NEO4JLABS_PLUGINS: '["graph-data-science"]'
+      NEO4J_dbms_security_procedures_unrestricted: gds.*
+      NEO4J_dbms_security_procedures_allowlist: gds.*
